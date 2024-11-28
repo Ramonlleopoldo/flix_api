@@ -8,3 +8,6 @@ class MovieModel(models.Model):
     actors = models.ManyToManyField(ActorsModel, related_name='movie_actors')
     resume = models.TextField(blank=True, null=True)
     release_data = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return self.title
