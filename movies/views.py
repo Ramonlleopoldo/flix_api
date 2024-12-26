@@ -3,28 +3,28 @@ from rest_framework import generics, views, response, status
 from rest_framework.permissions import IsAuthenticated
 from app.permissions import GlobalDefaultPermission
 from movies.models import MovieModel
-from movies.serializers import MovieSerializer, MovieListDetailView
+from movies.serializers import MovieModelSerializer, MovieListDetailSerializer, MovieStatsSerializer
 from reviews.models import ReviewModels
 
 
-class MovieListCreateView(generics.ListCreateAPIView):
+class MovieCreateListView(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated, GlobalDefaultPermission,)
     queryset = MovieModel.objects.all()
 
     def get_serializer_class(self):
-        if self.request.method == "GET":
-            return MovieListDetailView
-        return MovieSerializer
+        if self.request.method == 'GET':
+            return MovieListDetailSerializer
+        return MovieModelSerializer
 
 
-class MovieRestriveUpdatedeleteView(generics.RetrieveUpdateDestroyAPIView):
+class MovieRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAuthenticated, GlobalDefaultPermission,)
     queryset = MovieModel.objects.all()
 
     def get_serializer_class(self):
-        if self.request.method == "GET":
-            return MovieListDetailView
-        return MovieSerializer
+        if self.request.method == 'GET':
+            return MovieListDetailSerializer
+        return MovieModelSerializer
 
 
 class MovieStatsView(views.APIView):
@@ -32,12 +32,21 @@ class MovieStatsView(views.APIView):
     queryset = MovieModel.objects.all()
 
     def get(self, request):
-        total_movie = self.queryset.count()
-        movie_by_genre = self.queryset.values('genre__name').annotate(count=Count('id'))
-        total_review = ReviewModels.objects.count()
-        average_rating = ReviewModels.objects.aggregate(avg_rating=Avg('rating'))['avg_rating']
+        total_movies = self.queryset.count()
+        movies_by_genre = self.queryset.values('genre__name').annotate(count=Count('id'))
+        total_reviews = ReviewModels.objects.count()
+        average_stars = ReviewModels.objects.aggregate(avg_stars=Avg('stars'))['avg_stars']
+
+        data = {
+            'total_movies': total_movies,
+            'movies_by_genre': movies_by_genre,
+            'total_reviews': total_reviews,
+            'average_stars': round(average_stars, 1) if average_stars else 0,
+        }
+        serializer = MovieStatsSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
 
         return response.Response(
-            data={"total_movie": total_movie, "movie_by_genre": movie_by_genre, "total_review": total_review, "average_rating": round(average_rating, 1) if average_rating else 0},
-            status=status.HTTP_200_OK
+            data=serializer.validated_data,
+            status=status.HTTP_200_OK,
         )
