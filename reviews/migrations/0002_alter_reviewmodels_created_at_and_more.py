@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterField(
             model_name='reviewmodels',
-            name='rating',
+            name='stars',
             field=models.IntegerField(validators=[django.core.validators.MinValueValidator(0, 'Valores abaixo de 0 nao são permitidos.'), django.core.validators.MaxValueValidator(5, 'Valores acima de 5 não são permitidos.')]),
         ),
         migrations.AlterField(

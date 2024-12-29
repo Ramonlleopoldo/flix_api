@@ -48,13 +48,13 @@ class MovieListDetailSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'genre', 'actors', 'release_data', 'rate', 'resume']
 
     def get_rate(self, obj):
-        rating = obj.movie_review.aggregate(Avg('rating'))['rating__avg']
-        if rating:
-            return round(rating, 1)
+        stars = obj.movie_review.aggregate(Avg('stars'))['stars__avg']
+        if stars:
+            return round(stars, 1)
         return None
 
 class MovieStatsSerializer(serializers.Serializer):
     total_movies = serializers.IntegerField()
     movies_by_genre = serializers.ListField()
     total_reviews = serializers.IntegerField()
-    average_rating = serializers.FloatField()
+    average_stars = serializers.FloatField()

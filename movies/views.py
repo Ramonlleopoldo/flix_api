@@ -28,7 +28,7 @@ class MovieRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class MovieStatsView(views.APIView):
-    permission_classes = (IsAuthenticated, GlobalDefaultPermission,)
+    #permission_classes = (IsAuthenticated, GlobalDefaultPermission,)
     queryset = MovieModel.objects.all()
 
     def get(self, request):

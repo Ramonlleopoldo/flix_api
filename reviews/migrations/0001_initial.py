@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
                 ('update_at', models.DateTimeField(auto_created=True)),
                 ('created_at', models.DateTimeField(auto_created=True)),
                 ('user_name', models.CharField(max_length=200)),
-                ('rating', models.IntegerField()),
+                ('stars', models.IntegerField()),
                 ('coments', models.TextField(blank=True, null=True)),
                 ('movie', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='movie_review', to='movies.moviemodel')),
             ],
